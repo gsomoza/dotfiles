@@ -24,8 +24,11 @@ zstyle ':prezto:*:*' color 'yes'
 # Set the Prezto modules to load (browse modules).
 # The order matters.
 zstyle ':prezto:load' pmodule \
+  'tmux' \
   'environment' \
   'terminal' \
+  'prompt' \
+  'gpg' \
   'editor' \
   'history' \
   'directory' \
@@ -36,28 +39,27 @@ zstyle ':prezto:load' pmodule \
   'fasd' \
   'git' \
   'osx' \
-  'ruby' \
+  'homebrew' \
   'syntax-highlighting' \
   'history-substring-search' \
-  'ssh' \
-  'prompt'
+  'autosuggestions'
 
 #
 # Editor
 #
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':prezto:module:editor' key-bindings 'emacs'
+zstyle ':prezto:module:editor' key-bindings 'vi'
 
 # Auto convert .... to ../..
-# zstyle ':prezto:module:editor' dot-expansion 'yes'
+zstyle ':prezto:module:editor' dot-expansion 'yes'
 
 #
 # Git
 #
 
 # Ignore submodules when they are 'dirty', 'untracked', 'all', or 'none'.
-# zstyle ':prezto:module:git:status:ignore' submodules 'all'
+zstyle ':prezto:module:git:status:ignore' submodules 'all'
 
 #
 # GNU Utility
@@ -94,7 +96,7 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 #
 
 # Enable SSH-Agent protocol emulation.
-# zstyle ':prezto:module:gpg-agent' ssh-support 'yes'
+zstyle ':prezto:module:gpg-agent' ssh-support 'yes'
 
 #
 # SSH-Agent
@@ -104,7 +106,7 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 zstyle ':prezto:module:ssh-agent' forwarding 'yes'
 
 # Set ssh-agent identities to load.
-# zstyle ':prezto:module:ssh-agent' identities 'id_rsa' 'id_rsa2' 'id_github'
+zstyle ':prezto:module:ssh-agent' identities 'id_rsa'
 
 #
 # Syntax Highlighting
@@ -112,7 +114,7 @@ zstyle ':prezto:module:ssh-agent' forwarding 'yes'
 
 # Set syntax highlighters.
 # By default main, brackets, and cursor are enabled.
-# zstyle ':prezto:module:syntax-highlighting' highlighters \
+#zstyle ':prezto:module:syntax-highlighting' highlighters \
 #   'main' \
 #   'brackets' \
 #   'pattern' \
@@ -131,5 +133,6 @@ zstyle ':prezto:module:terminal' auto-title 'yes'
 #
 
 # Auto start a session when Zsh is launched.
-# zstyle ':prezto:module:tmux' auto-start 'yes'
-
+zstyle ':prezto:module:tmux' auto-start 'yes'
+#zstyle ':prezto:module:tmux:auto-start' local 'yes'
+#zstyle ':prezto:module:tmux:auto-start' remote 'yes'

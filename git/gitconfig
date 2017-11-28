@@ -2,6 +2,8 @@
 # See the README for examples.
 [color]
   ui = true
+	status = auto
+	diff = auto
 [color "branch"]
   current = yellow reverse
   local = yellow
@@ -125,3 +127,6 @@
   enabled = true
 [include]
   path = .gitconfig.user
+[user]
+	name = Gabriel Somoza
+	email = gabriel@strategery.io
