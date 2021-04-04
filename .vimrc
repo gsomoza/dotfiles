@@ -7,6 +7,8 @@ endif
 " =======================================================================
 " Basic Mappings
 " =======================================================================
+" Enable mouse
+set mouse=a
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
@@ -261,9 +263,13 @@ endfunction
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'mhinz/vim-startify'
+Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeToggle' }
+Plug 'ryanoasis/vim-devicons', {'on': 'NERDTreeToggle'}
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on': 'NERDTreeToggle'}
+Plug 'scrooloose/nerdtree-project-plugin', {'on': 'NERDTreeToggle'}
 Plug 'tpope/vim-sensible'
 Plug '/usr/local/opt/fzf'
 Plug 'tpope/vim-fugitive'
@@ -289,11 +295,33 @@ endif
 let g:deoplete#enable_at_startup = 1
 
 " PHP Completion Daemon --------------------------------------------------
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
+" Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
 " call deoplete#custom#option('ignore_sources', {'php': ['omni']})
 
 " LargeFile --------------------------------------------------------------
 Plug 'vim-scripts/LargeFile'
 let g:LargeFile = 10
+
+" NERDTree ---------------------------------------------------------------
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+let NERDTreeShowHidden = 1
+" Start NERDTree when Vim is started without file arguments.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter *
+    \   if !argc() && !exists('s:std_in')
+    \ |   Startify 
+    \ |   NERDTree 
+    \ |   wincmd w 
+    \ | endif
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+            \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 call plug#end()
