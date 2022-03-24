@@ -18,6 +18,8 @@ foreach piece (
     p10k.zsh
     vimrc
     tmux.conf
+    gitignore
+    gitconfig
 ) {
     [[ ! -L "$HOME/.$piece" ]] && ln -s $DOTFILES_DIR/$piece $HOME/.$piece 
 }
