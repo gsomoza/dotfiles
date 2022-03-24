@@ -7,7 +7,7 @@ function installHomebrew() {
     brew update
     brew install git
 }
-#installHomebrew
+installHomebrew
 
 # symlink all dotfiles into ~/
 if [[ ! -d "$DOTFILES_DIR" ]]; then
