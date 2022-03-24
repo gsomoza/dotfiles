@@ -1,75 +1,334 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+#!usr/bin/env zsh
+# Based on: https://raw.githubusercontent.com/z-shell/playground/main/brucebentley/zshrc.zsh
+
+# - - - - - - - - - - - - - - - - - - - -
+# Profiling Tools
+# - - - - - - - - - - - - - - - - - - - -
+
+PROFILE_STARTUP=false
+if [[ "$PROFILE_STARTUP" == true ]]; then
+  zmodload zsh/zprof
+  # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
+  PS4=$'%D{%M%S%.} %N:%i> '
+  exec 3>&2 2>$HOME/startlog.$$
+  setopt xtrace prompt_subst
+fi
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# Instant Prompt
+# - - - - - - - - - - - - - - - - - - - -
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of `~/.zshrc`.
+# Initialization code that may require console input ( password prompts, [y/n]
+# confirmations, etc. ) must go above this block, everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
 MAGIC_ENTER_OTHER_COMMAND='exa -laF --icons --git --group-directories-first'
 
-### Added by Zinit's installer
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+# - - - - - - - - - - - - - - - - - - - -
+# Homebrew Configuration
+# - - - - - - - - - - - - - - - - - - - -
+
+# If You Come From Bash You Might Have To Change Your $PATH.
+#   export PATH=:/usr/local/bin:/usr/local/sbin:$HOME/bin:$PATH
+export PATH="$HOME/bin:/usr/local/bin:$PATH"
+
+# Homebrew Requires This.
+export PATH="/usr/local/sbin:$PATH"
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# Zsh Core Configuration
+# - - - - - - - - - - - - - - - - - - - -
+
+# Install Functions.
+export XDG_CONFIG_HOME="$HOME/.config"
+export UPDATE_INTERVAL=15
+
+export DOTFILES="$HOME/dotfiles"
+[[ -d "$DOTFILES" ]] || mkdir -p "$DOTFILES"
+export ZSH="$HOME/dotfiles/zsh"
+[[ -d "$ZSH" ]] || mkdir -p "$ZSH"
+export CACHEDIR="$HOME/.local/share"
+[[ -d "$CACHEDIR" ]] || mkdir -p "$CACHEDIR"
+
+# Load The Prompt System And Completion System And Initilize Them.
+autoload -Uz compinit promptinit
+
+# Load And Initialize The Completion System Ignoring Insecure Directories With A
+# Cache Time Of 20 Hours, So It Should Almost Always Regenerate The First Time A
+# Shell Is Opened Each Day.
+# See: https://gist.github.com/ctechols/ca1035271ad134841284
+_comp_files=(${ZDOTDIR:-$HOME}/.zcompdump(Nm-20))
+if (( $#_comp_files )); then
+    compinit -i -C
+else
+    compinit -i
+fi
+unset _comp_files
+promptinit
+setopt prompt_subst
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# ZSH Settings
+# - - - - - - - - - - - - - - - - - - - -
+
+autoload -U colors && colors    # Load Colors.
+unsetopt case_glob              # Use Case-Insensitve Globbing.
+setopt globdots                 # Glob Dotfiles As Well.
+setopt extendedglob             # Use Extended Globbing.
+setopt autocd                   # Automatically Change Directory If A Directory Is Entered.
+
+# Smart URLs.
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
+# General.
+setopt brace_ccl                # Allow Brace Character Class List Expansion.
+setopt combining_chars          # Combine Zero-Length Punctuation Characters ( Accents ) With The Base Character.
+setopt rc_quotes                # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
+unsetopt mail_warning           # Don't Print A Warning Message If A Mail File Has Been Accessed.
+
+# Jobs.
+setopt long_list_jobs           # List Jobs In The Long Format By Default.
+setopt auto_resume              # Attempt To Resume Existing Job Before Creating A New Process.
+setopt notify                   # Report Status Of Background Jobs Immediately.
+unsetopt bg_nice                # Don't Run All Background Jobs At A Lower Priority.
+unsetopt hup                    # Don't Kill Jobs On Shell Exit.
+unsetopt check_jobs             # Don't Report On Jobs When Shell Exit.
+
+setopt correct                  # Turn On Corrections
+
+# Completion Options.
+setopt complete_in_word         # Complete From Both Ends Of A Word.
+setopt always_to_end            # Move Cursor To The End Of A Completed Word.
+setopt path_dirs                # Perform Path Search Even On Command Names With Slashes.
+setopt auto_menu                # Show Completion Menu On A Successive Tab Press.
+setopt auto_list                # Automatically List Choices On Ambiguous Completion.
+setopt auto_param_slash         # If Completed Parameter Is A Directory, Add A Trailing Slash.
+setopt no_complete_aliases
+
+setopt menu_complete            # Do Not Autoselect The First Completion Entry.
+unsetopt flow_control           # Disable Start/Stop Characters In Shell Editor.
+
+# Zstyle.
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "$HOME/.zcompcache"
+zstyle ':completion:*' list-colors $LS_COLORS
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+zstyle ':completion:*' rehash true
+
+# History.
+HISTFILE="${ZDOTDIR:-$HOME}/.zhistory"
+HISTSIZE=100000
+SAVEHIST=5000
+setopt appendhistory notify
+unsetopt beep nomatch
+
+setopt bang_hist                # Treat The '!' Character Specially During Expansion.
+setopt inc_append_history       # Write To The History File Immediately, Not When The Shell Exits.
+setopt share_history            # Share History Between All Sessions.
+setopt hist_expire_dups_first   # Expire A Duplicate Event First When Trimming History.
+setopt hist_ignore_dups         # Do Not Record An Event That Was Just Recorded Again.
+setopt hist_ignore_all_dups     # Delete An Old Recorded Event If A New Event Is A Duplicate.
+setopt hist_find_no_dups        # Do Not Display A Previously Found Event.
+setopt hist_ignore_space        # Do Not Record An Event Starting With A Space.
+setopt hist_save_no_dups        # Do Not Write A Duplicate Event To The History File.
+setopt hist_verify              # Do Not Execute Immediately Upon History Expansion.
+setopt extended_history         # Show Timestamp In History.
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# ZI Configuration
+# - - - - - - - - - - - - - - - - - - - -
+
+__ZI="${ZDOTDIR:-$HOME}/.zi/bin/zi.zsh"
+
+if [[ ! -f "$__ZI" ]]; then
+  print -P "%F{33}▓▒░ %F{220}Installing ZI Initiative Plugin Manager (z-shell/zi)…%f"
+  command mkdir -p "$HOME/.zi" && command chmod g-rwX "$HOME/.zi"
+  command git clone https://github.com/z-shell/zi "$HOME/.zi/bin" && \
+    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+    print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+. "$__ZI"
+autoload -Uz _zi
+(( ${+_comps} )) && _comps[zi]=_zi
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zinit-zsh/z-a-rust \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
 
-### End of Zinit's installer chunk
+# - - - - - - - - - - - - - - - - - - - -
+# Theme
+# - - - - - - - - - - - - - - - - - - - -
 
-### zinit custom
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit wait lucid for \
-  light-mode atinit"zicompinit; zicdreplay" \
-      zdharma/fast-syntax-highlighting \
-  light-mode atload"_zsh_autosuggest_start" \
-      zsh-users/zsh-autosuggestions \
-  light-mode blockf atpull'zinit creinstall -q .' \
-      zsh-users/zsh-completions \
-  t413/zsh-background-notify \
-  zdharma/history-search-multi-word
-zinit wait"1" lucid from"gh-r" as"null" for \
-     sbin"fzf"             junegunn/fzf \
-     sbin"**/fd"           @sharkdp/fd \
-     sbin"**/bat"          @sharkdp/bat \
-     sbin"exa* -> exa"     ogham/exa \
-     sbin"stern* -> stern" wercker/stern
+# Most Themes Use This Option.
+setopt promptsubst
 
-zinit snippet OMZP::ansible
-zinit snippet OMZP::command-not-found
-zinit snippet OMZP::docker-compose
-zinit snippet OMZP::git
-zinit snippet OMZP::gpg-agent
-zinit snippet OMZP::magic-enter
-zinit snippet OMZP::safe-paste
-### End zinit custom
+# These plugins provide many aliases - atload''
+zi wait lucid for \
+  OMZ::lib/git.zsh \
+atload"unalias grv" \
+  OMZ::plugins/git/git.plugin.zsh
 
-alias ll='exa -laF --icons --git --group-directories-first'
-export PATH="${HOME}/bin:/usr/local/opt/mysql-client/bin:$PATH"
-export PATH="/usr/local/sbin:$PATH"
-export PATH="$PATH:$HOME/.composer/vendor/bin"
-export PATH="/usr/local/opt/icu4c/bin:$PATH"
-export PATH="/usr/local/opt/icu4c/sbin:$PATH"
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+# Provide A Simple Prompt Till The Theme Loads
+PS1="READY >"
+zi ice wait'!' lucid
+zi ice depth=1; zi light romkatv/powerlevel10k
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/gabriel/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/gabriel/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/gabriel/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/gabriel/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+# - - - - - - - - - - - - - - - - - - - -
+# Annexes
+# - - - - - - - - - - - - - - - - - - - -
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Load a few important annexes, without Turbo.
+zi light-mode compile'*handler' for \
+z-shell/z-a-patch-dl \
+z-shell/z-a-readurl \
+z-shell/z-a-bin-gem-node \
+z-shell/z-a-submods
+zi light z-shell/declare-zsh
+
+# - - - - - - - - - - - - - - - - - - - -
+# Plugins
+# - - - - - - - - - - - - - - - - - - - -
+
+zi wait lucid light-mode for \
+  OMZ::lib/compfix.zsh \
+  OMZ::lib/completion.zsh \
+  OMZ::lib/functions.zsh \
+  OMZ::lib/diagnostics.zsh \
+  OMZ::lib/git.zsh \
+  OMZ::lib/grep.zsh \
+  OMZ::lib/key-bindings.zsh \
+  OMZ::lib/misc.zsh \
+  OMZ::lib/spectrum.zsh \
+  OMZ::lib/termsupport.zsh \
+  OMZP::git-auto-fetch \
+  OMZP::magic-enter \
+atinit"zicompinit; zicdreplay" \
+  z-shell/F-Sy-H \
+  OMZP::colored-man-pages \
+  OMZP::command-not-found \
+atload"_zsh_autosuggest_start" \
+  zsh-users/zsh-autosuggestions \
+as"completion" \
+  OMZP::docker/_docker \
+  OMZP::composer
+
+zi wait"1" lucid from"gh-r" as"null" for \
+  sbin"**/fd"             @sharkdp/fd \
+  sbin"**/bat"            @sharkdp/bat
+
+# Recommended Be Loaded Last.
+zi ice wait blockf lucid atpull'zi creinstall -q .'
+zi load zsh-users/zsh-completions
+
+# rbenv
+#zi ice has'rbenv' id-as'rbenv' atpull'%atclone' \
+#  atclone"rbenv init - --no-rehash > htlsne/zplugin-rbenv"
+#zi load z-shell/null
+
+# pyenv
+#zi ice has'pyenv' id-as'pyenv' atpull'%atclone' \
+#  atclone"pyenv init - --no-rehash > pyenv.plugin.zsh"
+#zi load z-shell/null
+
+# Semi-graphical .zshrc editor for zi commands
+zi load z-shell/zui
+zi ice lucid wait'[[ -n ${ZLAST_COMMANDS[(r)cras*]} ]]'
+zi load z-shell/zi-crasis
+
+# - - - - - - - - - - - - - - - - - - - -
+# Snippets
+# - - - - - - - - - - - - - - - - - - - -
+zinit snippet OMZP::ssh-agent
+
+# - - - - - - - - - - - - - - - - - - - -
+# User Configuration
+# - - - - - - - - - - - - - - - - - - - -
+
+setopt no_beep
+export MANPATH="/usr/local/man:$MANPATH"
+
+# Load Custom Executable Functions
+[[ -f "$ZSH/config/functions.zsh" ]] && source "$ZSH/config/functions.zsh"
+
+# Local Config
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+foreach piece (
+  exports.zsh
+  node.zsh
+  aliases.zsh
+  functions.zsh
+) {
+[[ -f "${ZSH}/config/${piece}" ]] && source "${ZSH}/config/${piece}"
+}
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# cdr, persistent cd
+# - - - - - - - - - - - - - - - - - - - -
+
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+DIRSTACKFILE="$HOME/.cache/zsh/dirs"
+
+# Make `DIRSTACKFILE` If It 'S Not There.
+if [[ ! -a $DIRSTACKFILE ]]; then
+  mkdir -p $DIRSTACKFILE[0,-5]
+  touch $DIRSTACKFILE
+fi
+
+if [[ -f $DIRSTACKFILE ]] && [[ $#dirstack -eq 0 ]]; then
+  dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
+fi
+
+chpwd() {
+  print -l $PWD ${(u)dirstack} >>$DIRSTACKFILE
+  local d="$(sort -u $DIRSTACKFILE )"
+  echo "$d" > $DIRSTACKFILE
+}
+
+DIRSTACKSIZE=20
+
+setopt auto_pushd pushd_silent pushd_to_home
+
+setopt pushd_ignore_dups        # Remove Duplicate Entries
+setopt pushd_minus              # This Reverts The +/- Operators.
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# Theme / Prompt Customization
+# - - - - - - - - - - - - - - - - - - - -
+
+# To Customize Prompt, Run `p10k configure` Or Edit `~/.p10k.zsh`.
+[[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+
+
+# - - - - - - - - - - - - - - - - - - - -
+# End Profiling Script
+# - - - - - - - - - - - - - - - - - - - -
+
+if [[ "$PROFILE_STARTUP" == true ]]; then
+  unsetopt xtrace
+  exec 2>&3 3>&-
+  zprof > ~/zshprofile$(date +'%s')
+fi
