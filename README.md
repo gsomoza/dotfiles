@@ -1,4 +1,11 @@
-## Gabriel's 2021 DotFiles
+# Gabriel's 2021 DotFiles
+
+Tested on a MacBook Pro M1 Max (2021).
+
+First time setup:
+```
+curl https://raw.githubusercontent.com/vveleva/dotfiles/master/setup_env.sh | zsh
+```
 
 #### Terminal
 * Plugin manager: [zi](https://github.com/z-shell/zi/)
