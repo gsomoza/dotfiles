@@ -269,7 +269,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeToggle' }
 Plug 'ryanoasis/vim-devicons', {'on': 'NERDTreeToggle'}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', {'on': 'NERDTreeToggle'}
-Plug 'scrooloose/nerdtree-project-plugin', {'on': 'NERDTreeToggle'}
 Plug 'tpope/vim-sensible'
 Plug '/usr/local/opt/fzf'
 Plug 'tpope/vim-fugitive'
@@ -283,20 +282,6 @@ Plug 'mhinz/vim-signify'
 Plug 'ctrlpvim/ctrlp.vim'
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
-
-" Deoplete ---------------------------------------------------------------
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-let g:deoplete#enable_at_startup = 1
-
-" PHP Completion Daemon --------------------------------------------------
-" Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
-" call deoplete#custom#option('ignore_sources', {'php': ['omni']})
 
 " LargeFile --------------------------------------------------------------
 Plug 'vim-scripts/LargeFile'
