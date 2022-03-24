@@ -1,7 +1,7 @@
 ## Gabriel's 2021 DotFiles
 
-#### Prompt
-* Plugin manager: [zinit](https://github.com/zdharma/zinit)
+#### Terminal
+* Plugin manager: [zi](https://github.com/z-shell/zi/)
 * Theme: [p10k](https://github.com/romkatv/powerlevel10k)
 
 #### Vim
