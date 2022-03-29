@@ -1,3 +1,5 @@
 [user]
 	name = Gabriel Somoza
 	email = gabriel@strategery.io
+[core]
+	excludesfile = /Users/gabriel/.gitignore
