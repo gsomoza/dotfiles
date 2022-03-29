@@ -36,4 +36,4 @@ mas "1Password 7", id: 1333542190
 mas "Magnet", id: 441258766
 mas "Todoist", id: 585829637
 mas "Table Tool", id: 1122008420
-mas "Slack", id: 803453959
+#mas "Slack", id: 803453959
