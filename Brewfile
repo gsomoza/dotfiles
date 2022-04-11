@@ -16,6 +16,7 @@ brew "ansible"
 brew "docker-compose"
 brew "ssh-copy-id"
 brew "cloudflared"
+brew "awscli"
 
 # Kubernetes
 brew "kubectl"
