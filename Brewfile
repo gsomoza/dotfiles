@@ -27,6 +27,7 @@ brew "krew"
 # Dev
 brew "jq"
 brew "go"
+brew "mysql-client"
 
 # App store
 mas "Microsoft Remote Desktop", id: 1295203466
