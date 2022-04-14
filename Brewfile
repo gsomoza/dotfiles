@@ -29,6 +29,11 @@ brew "jq"
 brew "go"
 brew "mysql-client"
 
+# Magento 2
+brew "composer"
+tap "davidalger/warden"
+brew "warden"
+
 # App store
 mas "Microsoft Remote Desktop", id: 1295203466
 mas "Mindnode", id: 1289197285
@@ -38,4 +43,4 @@ mas "1Password 7", id: 1333542190
 mas "Magnet", id: 441258766
 mas "Todoist", id: 585829637
 mas "Table Tool", id: 1122008420
-#mas "Slack", id: 803453959
+mas "Slack", id: 803453959
