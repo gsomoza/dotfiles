@@ -23,11 +23,13 @@ brew "kubectl"
 brew "kubectx"
 brew "k9s"
 brew "krew"
+brew "helm"
 
 # Dev
 brew "jq"
 brew "go"
 brew "mysql-client"
+brew "node"
 
 # Magento 2
 brew "composer"

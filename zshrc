@@ -332,3 +332,5 @@ if [[ "$PROFILE_STARTUP" == true ]]; then
   exec 2>&3 3>&-
   zprof > ~/zshprofile$(date +'%s')
 fi
+
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
