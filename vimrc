@@ -277,6 +277,7 @@ Plug 'majutsushi/tagbar'
 Plug 'chrisbra/csv.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
+Plug 'christoomey/vim-system-copy'
 
 " Ctrlp ------------------------------------------------------------------
 Plug 'ctrlpvim/ctrlp.vim'
