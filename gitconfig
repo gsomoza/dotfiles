@@ -3,3 +3,7 @@
 	email = gabriel@strategery.io
 [core]
 	excludesfile = /Users/gabriel/.gitignore
+[pull]
+	ff = only
+[init]
+	defaultBranch = main
