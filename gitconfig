@@ -1,9 +1,24 @@
 [user]
 	name = Gabriel Somoza
 	email = gabriel@strategery.io
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4YJhlxbdlaodMZjDdOBYpVyWUa9QfRXImXOyv1Hr3F
 [core]
 	excludesfile = /Users/gabriel/.gitignore
 [pull]
 	ff = only
 [init]
 	defaultBranch = main
+[author]
+	name = Gabriel Somoza
+	email = gabriel@ancord.eu
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
